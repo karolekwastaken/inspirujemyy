@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Motywacyjne przysłowia</title>
+  <style>
+    body, html {
+      height: 100%;
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: white;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(120deg, #e0f7ff, #f5fcff);
+      background-size: 300% 300%;
+      animation: gradientMove 10s ease infinite;
+      z-index: 0;
+    }
+
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    #container {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 20px;
+      max-width: 700px;
+    }
+
+    #generateBtn {
+      background-color: #000;
+      color: #fff;
+      padding: 14px 30px;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    #generateBtn:hover {
+      background-color: #222;
+      transform: scale(1.05);
+    }
+
+    #quote {
+      margin-top: 30px;
+      font-size: 1.4rem;
+      color: #000;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+      min-height: 60px;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <button id="generateBtn">Wygeneruj przysłowie</button>
+    <div id="quote"></div>
+  </div>
+
+  <script>
+    const quotes = [
+      "Nie czekaj na okazję, stwórz ją sam.",
+      "Sukces to suma małych wysiłków powtarzanych dzień po dniu.",
+      "Nie musisz być wielki, żeby zacząć, ale musisz zacząć, żeby być wielki.",
+      "Wiara w siebie to pierwszy krok do sukcesu.",
+      "Nie licz dni, spraw, by dni się liczyły.",
+      "Nawet najdłuższa podróż zaczyna się od pierwszego kroku.",
+      "Nie poddawaj się, bo właśnie wtedy może nastąpić przełom.",
+      "Twoje ograniczenia istnieją tylko w Twojej głowie.",
+      "Każdy dzień to nowa szansa.",
+      "Nie bój się porażek, one uczą.",
+      "Marzenia nie działają, jeśli Ty nie działasz.",
+      "Zmieniaj świat poprzez swoje działania.",
+      "Każdy wielki sukces zaczyna się od decyzji spróbowania.",
+      "Zawsze patrz na jasną stronę życia.",
+      "Cierpliwość jest kluczem do spełnienia marzeń.",
+      "Kto nie ryzykuje, ten nie pije szampana.",
+      "Wielkie rzeczy wymagają czasu.",
+      "Działaj tak, jakbyś nie mógł ponieść porażki.",
+      "Żaden wysiłek nie jest zmarnowany.",
+      "Nie porównuj się do innych – porównuj się do siebie z wczoraj.",
+      "Twój czas jest ograniczony, nie marnuj go, żyjąc cudzym życiem.",
+      "Bądź zmianą, którą chcesz zobaczyć w świecie.",
+      "Jeśli czegoś pragniesz, znajdziesz sposób. Jeśli nie, znajdziesz wymówkę.",
+      "Ucz się tak, jakbyś miał żyć wiecznie. Żyj tak, jakbyś miał umrzeć jutro.",
+      "Nie ma rzeczy niemożliwych – są tylko te, które wymagają więcej wysiłku.",
+      "Tylko ten, kto upada i wstaje, jest naprawdę silny.",
+      "Nigdy nie rezygnuj z celu tylko dlatego, że osiągnięcie go wymaga czasu.",
+      "Czas i tak upłynie.",
+      "Każde potknięcie to lekcja, nie porażka.",
+      "Lepiej spróbować i żałować, niż żałować, że się nie spróbowało.",
+      "Twoje działania mówią więcej niż słowa.",
+      "Nie ma sukcesu bez dyscypliny.",
+      "Ciężka praca pokonuje talent, jeśli talent nie pracuje ciężko.",
+      "Twój los zależy od Twoich codziennych nawyków.",
+      "Sukces zaczyna się w głowie.",
+      "Jesteś silniejszy niż myślisz.",
+      "Największe osiągnięcia zaczynają się od najprostszych kroków.",
+      "Nie szukaj motywacji – stwórz ją.",
+      "Zwycięzcy nigdy się nie poddają.",
+      "Rób to, czego boisz się najbardziej.",
+      "Najlepszy czas na działanie to teraz.",
+      "Nigdy nie jest za późno, by stać się kimś, kim chcesz być.",
+      "Każdego dnia możesz zacząć od nowa.",
+      "Szczęście sprzyja odważnym.",
+      "Nie odkładaj życia na potem.",
+      "To, co dziś wydaje się trudne, jutro będzie rozgrzewką.",
+      "Twój wysiłek się liczy – nawet jeśli nikt go nie widzi.",
+      "Nie pozwól, by wczoraj zabrało ci zbyt wiele z dzisiaj.",
+      "Małe kroki prowadzą do wielkich zmian.",
+      "Wewnętrzna siła rośnie z każdym wyzwaniem.",
+      "Niech Twoje czyny będą głośniejsze niż Twoje wymówki.",
+      "Nie trać energii na rzeczy, które nie mają znaczenia.",
+      "To, co myślisz o sobie, jest ważniejsze niż to, co myślą inni.",
+      "Uwierz, że potrafisz – i jesteś już w połowie drogi.",
+      "Postęp to postęp, niezależnie od jego tempa.",
+      "Każdy dzień to nowa okazja, by być lepszym.",
+      "Nie pytaj, czy możesz – zapytaj, jak to zrobić.",
+      "Zacznij tam, gdzie jesteś. Użyj tego, co masz. Zrób, co możesz.",
+      "Nadzieja to początek każdej zmiany.",
+      "Niech Twoja praca mówi sama za siebie.",
+      "Słabość to tylko stan przejściowy.",
+      "Zawsze jest coś, za co warto być wdzięcznym.",
+      "Zmień myśli, a zmienisz świat.",
+      "Pokonuj siebie – to największe zwycięstwo.",
+      "Nigdy nie wątp w swoją wartość.",
+      "Każdy mały sukces to krok do wielkiego celu.",
+      "Twój czas dopiero nadchodzi.",
+      "Nie trać wiary w to, co robisz.",
+      "Wytrwałość pokonuje wszystko.",
+      "Rób to, co Cię przeraża – tam rośniesz.",
+      "Silni ludzie tworzą silne rezultaty.",
+      "Nigdy nie lekceważ potęgi nawyków.",
+      "Każdy dzień to szansa, by zacząć jeszcze raz.",
+      "Nawet najciemniejsza noc kończy się świtem.",
+      "Najlepsze dopiero przed Tobą."
+    ];
+
+    let remainingQuotes = [...quotes];
+
+    const btn = document.getElementById('generateBtn');
+    const quoteDiv = document.getElementById('quote');
+
+    btn.addEventListener('click', () => {
+      if (remainingQuotes.length === 0) {
+        remainingQuotes = [...quotes]; // reset
+      }
+
+      const index = Math.floor(Math.random() * remainingQuotes.length);
+      const text = remainingQuotes[index];
+      remainingQuotes.splice(index, 1); // usuwamy pokazane przysłowie
+
+      quoteDiv.style.opacity = 0;
+      setTimeout(() => {
+        quoteDiv.textContent = text;
+        quoteDiv.style.opacity = 1;
+      }, 200);
+    });
+  </script>
+</body>
+</html>
+
+
+
